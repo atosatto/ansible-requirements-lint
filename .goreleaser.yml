@@ -46,3 +46,4 @@ changelog:
   filters:
     exclude:
     - '^test:'
+    - '^doc:'

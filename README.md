@@ -2,6 +2,7 @@
 
 `ansible-requirements-lint` is a simple command-line tool to check if your Ansible dependencies are up to date.
 
+[![release](https://github.com/atosatto/ansible-requirements-lint/workflows/release/badge.svg)](https://github.com/atosatto/ansible-requirements-lint/actions?query=workflow%3Arelease)
 [![GoDoc](https://godoc.org/github.com/atosatto/ansible-requirements-lint?status.svg)](https://godoc.org/github.com/atosatto/ansible-requirements-lint)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Go Report Card](https://goreportcard.com/badge/github.com/atosatto/ansible-requirements-lint)](https://goreportcard.com/report/github.com/atosatto/ansible-requirements-lint)
