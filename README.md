@@ -10,8 +10,17 @@
 
 ## Installation
 
-You can download the latest release of `ansible-requirements-lint` from
-https://github.com/atosatto/ansible-requirements-lint/releases/latest.
+Get the latest `ansible-requirements-lint` release
+
+```bash
+curl -sLS https://raw.githubusercontent.com/atosatto/ansible-requirements-lint/master/contrib/install.sh | sh
+```
+
+Or, download a specific version
+
+```bash
+curl -sLS https://raw.githubusercontent.com/atosatto/ansible-requirements-lint/master/contrib/install.sh | VERSION=v1.0.0 sh
+```
 
 ## Usage
 
