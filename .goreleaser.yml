@@ -1,0 +1,48 @@
+project_name: ansible-requirements-lint
+
+before:
+  hooks:
+  - go mod download
+
+builds:
+- env:
+  - CGO_ENABLED=0
+  main: .
+  binary: ansible-requirements-lint
+  ldflags:
+  - -s -w
+  - -X main.version={{.Version}}
+  goos:
+  - darwin
+  - linux
+  - windows
+  goarch:
+  - amd64
+  - arm64
+
+archives:
+- name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386
+    amd64: x86_64
+  files:
+  - LICENSE.md
+  - README.md
+  format_overrides:
+  - goos: windows
+    format: zip
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  name_template: "{{ .Tag }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^test:'

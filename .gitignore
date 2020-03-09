@@ -1,0 +1,5 @@
+# Makefile generated files
+bin/
+
+# Goreleaser generated files
+dist/
