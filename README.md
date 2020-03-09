@@ -49,3 +49,11 @@ $ bin/ansible-requirements-lint requirements.yml
 WARN: atosatto.prometheus: role not at the latest version, upgrade to v1.1.0.
 WARN: atosatto.grafana: role not at the latest version, upgrade to v1.1.0.
 ```
+
+## License
+
+MIT
+
+## Author Information
+
+Andrea Tosatto ([@\_hilbert\_](https://twitter.com/_hilbert_))

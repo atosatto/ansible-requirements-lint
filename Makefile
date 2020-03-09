@@ -13,7 +13,7 @@ ifeq ($(VERSION),)
 	VERSION := 0.0.0
 endif
 ifneq ($(GITUNTRACKEDCHANGES),)
-	VERSION := $(VERSION)-$(GITCOMMIT)-dirty
+	VERSION := $(GITCOMMIT)-dirty
 endif
 
 # Go compiler name
