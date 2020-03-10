@@ -9,7 +9,7 @@ type Requirements struct {
 
 	// Roles is the list of roles defined
 	// in the Requirements file.
-	Roles []Role `yaml:",inline"`
+	Roles []*Role `yaml:",inline"`
 
 	// Children is the list of requirements
 	// files included by the Requirement file.

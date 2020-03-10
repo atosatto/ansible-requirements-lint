@@ -86,8 +86,8 @@ func Unmarshal(data []byte) (*Requirements, error) {
 	return &requirements, nil
 }
 
-func parseRolesFromNodesList(nodes []*yaml.Node) ([]Role, error) {
-	var res []Role
+func parseRolesFromNodesList(nodes []*yaml.Node) ([]*Role, error) {
+	var res []*Role
 
 	for _, n := range nodes {
 		var role Role
@@ -96,7 +96,7 @@ func parseRolesFromNodesList(nodes []*yaml.Node) ([]Role, error) {
 			return nil, fmt.Errorf("decoding line %d as role: %w", n.Line, err)
 		}
 		role.node = n
-		res = append(res, role)
+		res = append(res, &role)
 	}
 
 	return res, nil

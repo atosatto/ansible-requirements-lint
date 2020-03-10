@@ -7,7 +7,7 @@ before:
 builds:
 - env:
   - CGO_ENABLED=0
-  main: .
+  main: ./cmd/ansible-requirements-lint
   binary: ansible-requirements-lint
   ldflags:
   - -s -w
