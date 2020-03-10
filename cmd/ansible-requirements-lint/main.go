@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"os/signal"
 
 	"github.com/atosatto/ansible-requirements-lint/linter"
 	"github.com/atosatto/ansible-requirements-lint/provider"
@@ -58,6 +59,25 @@ func main() {
 		usageAndExit("")
 	}
 
+	// handle Ctrl+C
+	ctx, cancel := context.WithCancel(context.Background())
+	c := make(chan os.Signal, 1)
+	signal.Notify(c, os.Interrupt)
+
+	// call cancel on the context
+	defer func() {
+		signal.Stop(c)
+		cancel()
+	}()
+	go func() {
+		select {
+		case <-c:
+			cancel()
+		case <-ctx.Done():
+		}
+	}()
+
+	// parse the requirements file
 	r, err := requirements.UnmarshalFromFile(requirementsFile)
 	if err != nil {
 		switch {
@@ -70,37 +90,13 @@ func main() {
 		}
 	}
 
-	ctx := context.Background()
-	rolesChan := make(chan requirements.Role)
-	resultsChan := make(chan linter.Result)
-
+	// run the updates linter
 	updatesLinterOpts := linter.UpdatesLinterOptions{
 		AnsibleGalaxyURL: *galaxyURL,
 	}
-	updatesLinter := linter.NewUpdatesLinter(updatesLinterOpts)
-	go updatesLinter.RunWithContext(ctx, rolesChan, resultsChan)
+	numUpdatesOrErrs := runUpdatesLinter(ctx, r, updatesLinterOpts)
 
-	var errOrWarn = false
-	for _, role := range r.Roles {
-		rolesChan <- role
-		result := <-resultsChan
-
-		switch {
-		case result.Level == linter.LevelInfo && *verbose:
-			color.New(color.Bold, color.FgHiCyan).Printf("INFO: ")
-			fmt.Printf("%s.\n", result.Msg)
-		case result.Level == linter.LevelWarning:
-			color.New(color.Bold, color.FgHiYellow).Printf("WARN: ")
-			fmt.Printf("%s.\n", result.Msg)
-			errOrWarn = true
-		case result.Level == linter.LevelError:
-			color.New(color.Bold, color.FgHiRed).Printf("ERR: ")
-			fmt.Printf("%v.\n", result.Err)
-			errOrWarn = true
-		}
-	}
-
-	if errOrWarn {
+	if numUpdatesOrErrs > 0 {
 		os.Exit(1)
 	}
 }

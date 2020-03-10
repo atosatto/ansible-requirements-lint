@@ -28,7 +28,7 @@ all: clean fmt lint test staticcheck vet build ## Lints, tests and builds the co
 build: $(NAME) ## Builds a dynamic executable or package.
 
 $(NAME): $(shell find . -type f -name '*.go') Makefile
-	$(GO) build -ldflags $(LDFLAGS) -o $(BUILDDIR)/$(NAME) .
+	$(GO) build -ldflags $(LDFLAGS) -o $(BUILDDIR)/$(NAME) ./cmd/$(NAME)
 
 .PHONY: fmt
 fmt: ## Verifies that all files are `gofmt`ed.
@@ -65,7 +65,7 @@ coverage: ## Runs the go test and builds a coverage report.
 
 .PHONY: install
 install: ## Installs the binaries.
-	$(GO) install -a -ldflags $(LDFLAGS) .
+	$(GO) install -a -ldflags $(LDFLAGS) ./cmd/$(NAME)
 
 .PHONY: vendor
 vendor: ## Updates the vendors directory.
