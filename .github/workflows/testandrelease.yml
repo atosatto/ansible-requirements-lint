@@ -26,9 +26,9 @@ jobs:
         run: make test
 
       - name: Make staticcheck
-        run:
-          - go get -u honnef.co/go/tools/cmd/...
-          - make staticcheck
+        run: |
+          go get -u honnef.co/go/tools/cmd/... \
+          && make staticcheck
 
       - name: Make vet
         run: make vet
