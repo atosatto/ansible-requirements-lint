@@ -27,12 +27,12 @@ jobs:
 
       - name: Run gofmt
         run: |
-          gofmt -s -l . | grep -v vendor
+          make fmt
 
       - name: Run golint
         run: |
           go get -u golang.org/x/lint/golint && \
-          golint -set_exit_status ./... | grep -v vendor
+          golint ./... | grep -v vendor
 
       - name: Run go test
         run: |
