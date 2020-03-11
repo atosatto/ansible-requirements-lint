@@ -21,20 +21,23 @@ func runUpdatesLinter(ctx context.Context, r *requirements.Requirements, updates
 	var numUpdatesOrErr = 0
 	for _, role := range r.Roles {
 		rolesChan <- *role
-		result := <-resultsChan
-
-		switch {
-		case result.Level == linter.LevelInfo && *verbose:
-			color.New(color.Bold, color.FgHiCyan).Printf("INFO: ")
-			fmt.Printf("%s.\n", result.Msg)
-		case result.Level == linter.LevelWarning:
-			color.New(color.Bold, color.FgHiYellow).Printf("WARN: ")
-			fmt.Printf("%s.\n", result.Msg)
-			numUpdatesOrErr++
-		case result.Level == linter.LevelError:
-			color.New(color.Bold, color.FgHiRed).Printf("ERR: ")
-			fmt.Printf("%v.\n", result.Err)
-			numUpdatesOrErr++
+		select {
+		case <-ctx.Done():
+			return numUpdatesOrErr
+		case result := <-resultsChan:
+			switch {
+			case result.Level == linter.LevelInfo && *verbose:
+				color.New(color.Bold, color.FgHiCyan).Printf("INFO: ")
+				fmt.Printf("%s.\n", result.Msg)
+			case result.Level == linter.LevelWarning:
+				color.New(color.Bold, color.FgHiYellow).Printf("WARN: ")
+				fmt.Printf("%s.\n", result.Msg)
+				numUpdatesOrErr++
+			case result.Level == linter.LevelError:
+				color.New(color.Bold, color.FgHiRed).Printf("ERR: ")
+				fmt.Printf("%v.\n", result.Err)
+				numUpdatesOrErr++
+			}
 		}
 	}
 
