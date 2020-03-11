@@ -127,6 +127,7 @@ func TestParseMetaRequirementsFile(t *testing.T) {
 
   - role: test.ansible-requirements-lint-role
     version: v1.0.0
+    ansible_requirements_lint_role_variable: "ansible_requirements_lint"
 
   - name: test.ansible-requirements-lint-name
     version: v1.0.0

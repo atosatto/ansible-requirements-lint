@@ -28,6 +28,7 @@ Given the following `requirements.yml` file in your current working directory
 
 ```bash
 $ cat requirements.yml
+---
 
 # Prometheus
 - name: atosatto.prometheus
@@ -45,9 +46,33 @@ $ cat requirements.yml
 `ansible-requirements-lint` can be used to detect updates to the list of requirements with
 
 ```bash
-$ bin/ansible-requirements-lint requirements.yml
+$ ansible-requirements-lint requirements.yml
 WARN: atosatto.prometheus: role not at the latest version, upgrade from v1.0.1 to v1.1.0.
 WARN: atosatto.grafana: role not at the latest version, upgrade from v1.0.0 to v1.1.0.
+```
+
+
+In addition to requirements files, `ansible-requirements-lint` can also parse role dependencies
+declared in the `meta/main.yml` file in your role directory
+
+```bash
+$ cat meta/main.yml
+---
+
+dependencies:
+- role: atosatto.prometheus
+  version: v1.0.0
+  prometheus_release_tag: "v2.16.0"
+
+- name: atosatto.alertmanager
+  version: v1.0.0
+```
+
+Running `ansible-requirements-lint` will produce the following results 
+
+```bash
+$ ansible-requirements-lint meta/main.yml
+WARN: atosatto.prometheus: role not at the latest version, upgrade from v1.0.0 to v1.1.0.
 ```
 
 ## License

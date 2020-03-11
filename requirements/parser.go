@@ -120,7 +120,8 @@ func parseRolesFromNodesList(nodes []*yaml.Node) ([]*Role, error) {
 				case k.Kind == yaml.ScalarNode && k.Value == "include":
 					role.Include = v.Value
 				case k.Kind == yaml.ScalarNode:
-					return nil, NewUnexpectedMappingNodeValueError(k.Line, k.Value)
+					// when parsing dependencies in the meta/main.yml format
+					// we might encounter some variables names, let's ignore them
 				default:
 					return nil, NewUnexpectedNodeKindError(k.Line, k.Kind)
 				}
