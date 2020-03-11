@@ -59,19 +59,16 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 
 	// set the Ansible Galaxy search parameters
 	params := url.Values{}
+	params.Add("order_by", "-relevance")
+	params.Add("keywords", keywords)
 
 	// namespace to be used to filter the Ansible Galaxy results
 	split := strings.Split(keywords, ".")
 	if len(split) > 0 {
 		params.Add("namespaces", split[0])
-		params.Add("keywords", split[1])
-	} else {
-		params.Add("keywords", keywords)
 	}
 
-	params.Add("order_by", "-relevance")
 	baseURL.RawQuery = params.Encode()
-
 	req, err := http.NewRequestWithContext(ctx, "GET", baseURL.String(), nil)
 	if err != nil {
 		return nil, err
@@ -115,19 +112,14 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 		return nil, err
 	}
 
-	// select the first match in the results list
-	var matching *galaxyResult
-	if len(results.Results) > 0 {
-		matching = &results.Results[0]
-	}
-
-	if matching == nil {
-		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", results)
+	// role not found
+	if len(results.Results) == 0 {
+		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", keywords)
 	}
 
 	// get the latest version of the role
-	versions := make([]string, len(matching.SummaryFields.Versions))
-	for i, v := range matching.SummaryFields.Versions {
+	versions := make([]string, len(results.Results[0].SummaryFields.Versions))
+	for i, v := range results.Results[0].SummaryFields.Versions {
 		versions[i] = v.Name
 	}
 	return versions, nil

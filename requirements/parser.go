@@ -54,7 +54,6 @@ func Unmarshal(data []byte) (*Requirements, error) {
 			// - node.Content[1] will contain the list of roles or collections
 			var k, v = childrens[0], childrens[1]
 			childrens = childrens[2:]
-
 			switch {
 			case k.Kind == yaml.ScalarNode && k.Value == "roles":
 				// we are parsing a requirements file using the new
@@ -107,7 +106,6 @@ func parseRolesFromNodesList(nodes []*yaml.Node) ([]*Role, error) {
 
 				var k, v = childrens[0], childrens[1]
 				childrens = childrens[2:]
-
 				switch {
 				case k.Kind == yaml.ScalarNode && k.Value == "src":
 					role.Source = v.Value
