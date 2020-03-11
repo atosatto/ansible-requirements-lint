@@ -10,7 +10,7 @@ VERSION := $(shell git describe $(git rev-list --tags --max-count=1))
 GITCOMMIT := $(shell git rev-parse --short HEAD)
 GITUNTRACKEDCHANGES := $(shell git status --porcelain --untracked-files=no)
 ifeq ($(VERSION),)
-	VERSION := v0.0.0
+	VERSION := 0.0.0
 endif
 ifneq ($(GITUNTRACKEDCHANGES),)
 	VERSION := $(GITCOMMIT)-dirty

@@ -1,7 +1,6 @@
 package requirements
 
 import (
-	"fmt"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v3"
@@ -32,7 +31,9 @@ func Unmarshal(data []byte) (*Requirements, error) {
 	}
 
 	var node = root.Content[0]
-	var childrens = node.Content
+	var childrens = make([]*yaml.Node, len(node.Content))
+	copy(childrens, node.Content)
+
 	switch {
 	case node.Kind == yaml.SequenceNode:
 		// we have a sequence of roles
@@ -43,20 +44,25 @@ func Unmarshal(data []byte) (*Requirements, error) {
 		requirements.Roles = roles
 	case node.Kind == yaml.MappingNode:
 		// we have a dictionary with either a roles or a collections list
-
-		// In case of maps,we should have at least a key and a value,
-		// if not we break the loop
-		if len(childrens)/2 <= 0 {
-			break
-		}
-
 		for {
+			if len(childrens) < 2 {
+				break
+			}
+
 			// Note that
 			// - node.Content[0] will be the key of the dictionary
 			// - node.Content[1] will contain the list of roles or collections
 			var k, v = childrens[0], childrens[1]
+			childrens = childrens[2:]
+
 			switch {
 			case k.Kind == yaml.ScalarNode && k.Value == "roles":
+				// we are parsing a requirements file using the new
+				// dictionary based syntax introduced with Collections
+				fallthrough
+			case k.Kind == yaml.ScalarNode && k.Value == "dependencies":
+				// we are parsing roles dependencies contained in the meta/main.yml
+				// manifest of an Ansible role
 				roles, err := parseRolesFromNodesList(v.Content)
 				if err != nil {
 					return nil, err
@@ -64,23 +70,15 @@ func Unmarshal(data []byte) (*Requirements, error) {
 				requirements.Roles = roles
 			case k.Kind == yaml.ScalarNode && k.Value == "collections":
 				// collections are not supported yet
-			case k.Kind == yaml.ScalarNode && k.Value == "collections":
-				return nil, fmt.Errorf("unknown dictionary key at line %d: %s", k.Line, k.Value)
+			case k.Kind == yaml.ScalarNode:
+				return nil, NewUnexpectedMappingNodeValueError(k.Line, k.Value)
 			default:
-				return nil, fmt.Errorf("unexpected node type at line %d: %v", k.Line, k.Kind)
+				return nil, NewUnexpectedNodeKindError(k.Line, k.Kind)
 			}
-
-			// if there are no more nodes to parse
-			if len(childrens) <= 2 {
-				break
-			}
-
-			// parse the next key/value pair
-			childrens = childrens[2:]
 		}
 	default:
 		// mh, something wrong is happening here
-		return nil, fmt.Errorf("unexpected node type at line %d: %v", node.Line, node.Kind)
+		return nil, NewUnexpectedNodeKindError(node.Line, node.Kind)
 	}
 
 	return &requirements, nil
@@ -90,12 +88,48 @@ func parseRolesFromNodesList(nodes []*yaml.Node) ([]*Role, error) {
 	var res []*Role
 
 	for _, n := range nodes {
-		var role Role
-		err := n.Decode(&role)
-		if err != nil {
-			return nil, fmt.Errorf("decoding line %d as role: %w", n.Line, err)
+		var role = Role{node: n}
+
+		switch {
+		case n.Kind == yaml.ScalarNode:
+			// entries in which the name of the role
+			// is provided directly (e.g. meta/main.yml dependencies)
+			role.Name = n.Value
+		case n.Kind == yaml.MappingNode:
+			// this is a standard dict-based role definition
+			var childrens = make([]*yaml.Node, len(n.Content))
+			copy(childrens, n.Content)
+
+			for {
+				if len(childrens) < 2 {
+					break
+				}
+
+				var k, v = childrens[0], childrens[1]
+				childrens = childrens[2:]
+
+				switch {
+				case k.Kind == yaml.ScalarNode && k.Value == "src":
+					role.Source = v.Value
+				case k.Kind == yaml.ScalarNode && k.Value == "scm":
+					role.Scm = v.Value
+				case k.Kind == yaml.ScalarNode && k.Value == "version":
+					role.Version = v.Value
+				case k.Kind == yaml.ScalarNode && (k.Value == "name" || k.Value == "role"):
+					role.Name = v.Value
+				case k.Kind == yaml.ScalarNode && k.Value == "include":
+					role.Include = v.Value
+				case k.Kind == yaml.ScalarNode:
+					// when parsing dependencies in the meta/main.yml format
+					// we might encounter some variables names, let's ignore them
+				default:
+					return nil, NewUnexpectedNodeKindError(k.Line, k.Kind)
+				}
+			}
+		default:
+			return nil, NewUnexpectedNodeKindError(n.Line, n.Kind)
 		}
-		role.node = n
+
 		res = append(res, &role)
 	}
 
