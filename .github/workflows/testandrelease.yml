@@ -19,6 +19,12 @@ jobs:
         with:
           go-version: 1.14.x
 
+      - name: Add GOBIN to the PATH
+        run: |
+          export GOBIN=$(go env GOPATH)/bin
+          echo "::set-env name=GOBIN::$(go env GOBIN)"
+          echo "::add-path::$(go env GOBIN)"
+
       - name: Run gofmt
         run: |
           gofmt -s -l . | grep -v vendor
@@ -26,16 +32,16 @@ jobs:
       - name: Run golint
         run: |
           go get -u golang.org/x/lint/golint && \
-          $GOROOT/bin/golint ./... | grep -v vendor
+          golint -set_exit_status ./... | grep -v vendor
 
       - name: Run go test
         run: |
-          go test test -v $(go list ./... | grep -v vendor)
+          go test -v $(go list ./... | grep -v vendor)
 
       - name: Run staticcheck
         run: |
           go get -u honnef.co/go/tools/cmd/... && \
-          $GOROOT/bin/staticcheck $(shell go list ./... | grep -v vendor)
+          staticcheck $(shell go list ./... | grep -v vendor)
 
       - name: Run go vet
         run: |
