@@ -61,11 +61,9 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	params := url.Values{}
 
 	// namespace to be used to filter the Ansible Galaxy results
-	var namespace string
 	split := strings.Split(keywords, ".")
 	if len(split) > 0 {
-		namespace = split[0]
-		params.Add("namespaces", namespace)
+		params.Add("namespaces", split[0])
 		params.Add("keywords", split[1])
 	} else {
 		params.Add("keywords", keywords)
@@ -124,7 +122,7 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	}
 
 	if matching == nil {
-		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", keywords)
+		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", results)
 	}
 
 	// get the latest version of the role
