@@ -1,4 +1,4 @@
-name: testandrelease
+---
 
 on:
   pull_request:
