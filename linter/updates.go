@@ -170,7 +170,7 @@ func (u *UpdatesLinter) RunWithContext(ctx context.Context, roles <-chan require
 			results <- Result{
 				Role:     r,
 				Level:    LevelWarning,
-				Msg:      fmt.Sprintf("%s unable to find [%s] between the available versions, tag a new release or use [%s]", roleName, r.Version, latest),
+				Msg:      fmt.Sprintf("%s: unable to find %s between the available versions, tag a new release or use %s", roleName, r.Version, latest),
 				Metadata: Update{FromVersion: r.Version, ToVersion: latest, IsUpdate: false},
 			}
 		} else {
