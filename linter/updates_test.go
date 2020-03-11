@@ -214,4 +214,6 @@ func TestUpdatesLinter(t *testing.T) {
 			t.Errorf("%s: expecting error %+v, obtained %+v", k, c.err, res.Err)
 		}
 	}
+
+	t.Errorf("test")
 }
