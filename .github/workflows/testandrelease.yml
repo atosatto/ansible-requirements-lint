@@ -26,7 +26,7 @@ jobs:
       - name: Run golint
         run: |
           go get -u golang.org/x/lint/golint && \
-          $GOBIN/golint ./... | grep -v vendor
+          $GOROOT/bin/golint ./... | grep -v vendor
 
       - name: Run go test
         run: |
@@ -35,7 +35,7 @@ jobs:
       - name: Run staticcheck
         run: |
           go get -u honnef.co/go/tools/cmd/... && \
-          $GOBIN/staticcheck $(shell go list ./... | grep -v vendor)
+          $GOROOT/bin/staticcheck $(shell go list ./... | grep -v vendor)
 
       - name: Run go vet
         run: |
