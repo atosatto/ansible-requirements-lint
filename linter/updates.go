@@ -153,7 +153,7 @@ func (u *UpdatesLinter) RunWithContext(ctx context.Context, roles <-chan require
 			results <- Result{
 				Role:     r,
 				Level:    LevelInfo,
-				Msg:      fmt.Sprintf("%s [%s]: the role is already at the latest version", roleName, r.Version),
+				Msg:      fmt.Sprintf("%s: %s is the latest version for the role, no update needed.", roleName, r.Version),
 				Metadata: Update{FromVersion: latest, ToVersion: latest, IsUpdate: false},
 			}
 			continue
