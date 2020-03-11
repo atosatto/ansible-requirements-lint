@@ -11,7 +11,7 @@ builds:
   binary: ansible-requirements-lint
   ldflags:
   - -s -w
-  - -X main.version={{.Version}}
+  - -X main.version={{ .Version }}
   goos:
   - darwin
   - linux
@@ -39,7 +39,7 @@ checksum:
   name_template: 'checksums.txt'
 
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  name_template: "{{ .Version }}-next"
 
 changelog:
   sort: asc

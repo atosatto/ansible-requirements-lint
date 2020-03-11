@@ -42,7 +42,7 @@ func main() {
 
 	// print the version
 	if *printVersion {
-		errAndExit(fmt.Sprintf("ansible-galaxy-lint %s", version))
+		errAndExit(fmt.Sprintf("ansible-galaxy-lint v%s", version))
 	}
 
 	if flag.NArg() != 1 || *printHelp {

@@ -16,7 +16,7 @@ type mockGitProvider struct{}
 
 func (g mockGitProvider) VersionsForRole(ctx context.Context, r requirements.Role) ([]string, error) {
 	switch {
-	case r.Source == "https://github.com/test/galaxy-lint":
+	case r.Source == "https://github.com/test/ansible-requirements-lint":
 		return []string{"v1.0.0", "v1.1.0"}, nil
 	default:
 		return nil, errMockRoleNotFound
@@ -27,7 +27,7 @@ type mockAnsibleGalaxyProvider struct{}
 
 func (g mockAnsibleGalaxyProvider) VersionsForRole(ctx context.Context, r requirements.Role) ([]string, error) {
 	switch {
-	case r.Source == "test.requirements-lint":
+	case r.Source == "test.ansible-requirements-lint":
 		return []string{"v1.0.0", "v1.1.0"}, nil
 	default:
 		return nil, errMockRoleNotFound
@@ -51,7 +51,7 @@ func TestUpdatesLinter(t *testing.T) {
 	}{
 		"galaxy:update": {
 			role: requirements.Role{
-				Source:  "test.requirements-lint",
+				Source:  "test.ansible-requirements-lint",
 				Version: "v1.0.0",
 			},
 			update: Update{
@@ -63,7 +63,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"galaxy:latest": {
 			role: requirements.Role{
-				Source:  "test.requirements-lint",
+				Source:  "test.ansible-requirements-lint",
 				Version: "v1.1.0",
 			},
 			update: Update{
@@ -75,7 +75,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"galaxy:noVersion": {
 			role: requirements.Role{
-				Source: "test.requirements-lint",
+				Source: "test.ansible-requirements-lint",
 			},
 			update: Update{
 				ToVersion: "v1.1.0",
@@ -85,7 +85,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"galaxy:notFound": {
 			role: requirements.Role{
-				Source:  "test.galaxy-lint-notfound",
+				Source:  "test.ansible-requirements-lint-notfound",
 				Version: "v1.0.0",
 			},
 			level: LevelError,
@@ -94,7 +94,7 @@ func TestUpdatesLinter(t *testing.T) {
 		// no scm (defaulting to git)
 		"noscm:update": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint",
+				Source:  "https://github.com/test/ansible-requirements-lint",
 				Version: "v1.0.0",
 			},
 			update: Update{
@@ -106,7 +106,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"noscm:latest": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint",
+				Source:  "https://github.com/test/ansible-requirements-lint",
 				Version: "v1.1.0",
 			},
 			update: Update{
@@ -118,7 +118,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"noscm:notFound": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint-notfound",
+				Source:  "https://github.com/test/ansible-requirements-lint-notfound",
 				Version: "v1.1.0",
 			},
 			level: LevelError,
@@ -126,14 +126,14 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"noscm:tarball": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint.tar.gz",
+				Source:  "https://github.com/test/ansible-requirements-lint.tar.gz",
 				Version: "v1.0.0",
 			},
 			level: LevelInfo,
 		},
 		"git:update": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint",
+				Source:  "https://github.com/test/ansible-requirements-lint",
 				Scm:     "git",
 				Version: "v1.0.0",
 			},
@@ -146,7 +146,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"git:latest": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint",
+				Source:  "https://github.com/test/ansible-requirements-lint",
 				Scm:     "git",
 				Version: "v1.0.0",
 			},
@@ -159,7 +159,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"git:branch": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint",
+				Source:  "https://github.com/test/ansible-requirements-lint",
 				Scm:     "git",
 				Version: "master",
 			},
@@ -172,7 +172,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"git:notfound": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint-notfound",
+				Source:  "https://github.com/test/ansible-requirements-lint-notfound",
 				Scm:     "git",
 				Version: "v1.0.0",
 			},
@@ -181,7 +181,7 @@ func TestUpdatesLinter(t *testing.T) {
 		},
 		"uknownscm": {
 			role: requirements.Role{
-				Source:  "https://github.com/test/galaxy-lint",
+				Source:  "https://github.com/test/ansible-requirements-lint",
 				Scm:     "hg",
 				Version: "v1.0.0",
 			},
