@@ -46,8 +46,8 @@ $ cat requirements.yml
 
 ```bash
 $ bin/ansible-requirements-lint requirements.yml
-WARN: atosatto.prometheus: role not at the latest version, upgrade to v1.1.0.
-WARN: atosatto.grafana: role not at the latest version, upgrade to v1.1.0.
+WARN: atosatto.prometheus [v1.0.1]: latest version is [v1.1.0].
+WARN: atosatto.grafana [v1.0.0]: latest version is [v1.1.0].
 ```
 
 ## License
