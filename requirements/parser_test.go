@@ -46,7 +46,7 @@ func parseAndCompare(t *testing.T, requirements string, expected Requirements) {
 func TestParseInlineRequirementsFile(t *testing.T) {
 	var requirements = `
 ---
-# Test ansible-requirements-lint 
+# Test ansible-requirements-lint
 - name: test.ansible-requirements-lint-name
   version: v1.0.0
 
@@ -60,15 +60,15 @@ func TestParseInlineRequirementsFile(t *testing.T) {
 
 	var expected = Requirements{
 		Roles: []*Role{
-			&Role{
+			{
 				Name:    "test.ansible-requirements-lint-name",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Source:  "test.ansible-requirements-lint-src",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Source:  "test.ansible-requirements-lint-scm",
 				Version: "v1.0.0",
 				Scm:     "git",
@@ -98,15 +98,15 @@ func TestParseRolesAndCollectionsRequirementsFile(t *testing.T) {
 `
 	var expected = Requirements{
 		Roles: []*Role{
-			&Role{
+			{
 				Name:    "test.ansible-requirements-lint-name",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Source:  "test.ansible-requirements-lint-src",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Source:  "test.ansible-requirements-lint-scm",
 				Version: "v1.0.0",
 				Scm:     "git",
@@ -141,22 +141,22 @@ func TestParseMetaRequirementsFile(t *testing.T) {
 `
 	var expected = Requirements{
 		Roles: []*Role{
-			&Role{
+			{
 				Name: "test.ansible-requirements-lint-inline",
 			},
-			&Role{
+			{
 				Name:    "test.ansible-requirements-lint-role",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Name:    "test.ansible-requirements-lint-name",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Source:  "test.ansible-requirements-lint-src",
 				Version: "v1.0.0",
 			},
-			&Role{
+			{
 				Source:  "test.ansible-requirements-lint-scm",
 				Version: "v1.0.0",
 				Scm:     "git",
