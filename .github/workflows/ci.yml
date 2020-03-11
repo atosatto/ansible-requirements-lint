@@ -1,0 +1,74 @@
+---
+
+name: ci
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14.x
+
+      - name: Add GOBIN to the PATH
+        run: |
+          export GOBIN=$(go env GOPATH)/bin
+          echo "::set-env name=GOBIN::$(go env GOBIN)"
+          echo "::add-path::$(go env GOBIN)"
+
+      - name: Run gofmt
+        run: |
+          make fmt
+
+      - name: Run golint
+        run: |
+          go get -u golang.org/x/lint/golint && \
+          make lint
+
+      - name: Run go test
+        run: |
+          make test
+
+      - name: Run staticcheck
+        run: |
+          go get -u honnef.co/go/tools/cmd/... && \
+          make staticcheck
+
+      - name: Run go vet
+        run: |
+          make vet
+
+  release:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Unshallow
+        run: git fetch --prune --unshallow
+
+      - name: Set up Go
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14.x
+
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v1
+        with:
+          version: latest
+          args: release --rm-dist
+          key: ${{ secrets.YOUR_PRIVATE_KEY }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

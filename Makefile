@@ -1,3 +1,6 @@
+# Set the shell
+SHELL := /bin/bash
+
 # Name of the package and tool
 NAME := ansible-requirements-lint
 PKG := github.com/atosatto/$(NAME)
