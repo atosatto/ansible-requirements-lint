@@ -52,7 +52,7 @@ WARN: atosatto.grafana: role not at the latest version, upgrade from v1.0.0 to v
 ```
 
 
-In addition to requirements files, `ansible-requirements-lint` can also parse role dependencies
+In addition to requirements files, `ansible-requirements-lint` can parse role dependencies
 declared in the `meta/main.yml` file in your role directory
 
 ```bash
@@ -68,7 +68,7 @@ dependencies:
   version: v1.0.0
 ```
 
-Running `ansible-requirements-lint` will produce the following results 
+Running `ansible-requirements-lint` will produce the following results
 
 ```bash
 $ ansible-requirements-lint meta/main.yml
