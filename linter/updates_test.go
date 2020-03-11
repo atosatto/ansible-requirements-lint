@@ -1,6 +1,6 @@
 package linter
 
-import (
+        import (
 	"context"
 	"fmt"
 	"reflect"
