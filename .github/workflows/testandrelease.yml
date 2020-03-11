@@ -32,20 +32,20 @@ jobs:
       - name: Run golint
         run: |
           go get -u golang.org/x/lint/golint && \
-          golint ./... | grep -v vendor
+          make lint
 
       - name: Run go test
         run: |
-          go test -v $(go list ./... | grep -v vendor)
+          make test
 
       - name: Run staticcheck
         run: |
           go get -u honnef.co/go/tools/cmd/... && \
-          staticcheck $(shell go list ./... | grep -v vendor)
+          make staticcheck
 
       - name: Run go vet
         run: |
-          go vet $(go list ./... | grep -v vendor)
+          make vet
 
   release:
     runs-on: ubuntu-latest
