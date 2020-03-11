@@ -19,22 +19,26 @@ jobs:
         with:
           go-version: 1.14.x
 
-      - name: Make fmt
-        run: make fmt
-
-      - name: Make lint
-        run: make lint
-
-      - name: Make test
-        run: make test
-
-      - name: Make staticcheck
+      - name: Run gofmt
         run: |
-          go get -u honnef.co/go/tools/cmd/... \
-          && make staticcheck
+          gofmt -s -l . | grep -v vendor
 
-      - name: Make vet
-        run: make vet
+      - name: Run golint
+        run: |
+          golint ./... | grep -v vendor
+
+      - name: Run go test
+        run: |
+          go test test -v $(go list ./... | grep -v vendor)
+
+      - name: Run staticcheck
+        run: |
+          go get -u honnef.co/go/tools/cmd/... && \
+          staticcheck $(shell go list ./... | grep -v vendor)
+
+      - name: Run go vet
+        run: |
+          go vet $(go list ./... | grep -v vendor)
 
   release:
     runs-on: ubuntu-latest
