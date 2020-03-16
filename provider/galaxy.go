@@ -60,15 +60,18 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	// set the Ansible Galaxy search parameters
 	params := url.Values{}
 	params.Add("order_by", "-relevance")
-	params.Add("keywords", keywords)
 
 	// namespace to be used to filter the Ansible Galaxy results
-	split := strings.Split(keywords, ".")
+	var split = strings.Split(keywords, ".")
 	if len(split) > 0 {
 		params.Add("namespaces", split[0])
+		params.Add("keywords", split[1])
+	} else {
+		params.Add("keywords", keywords)
 	}
 
 	baseURL.RawQuery = params.Encode()
+
 	req, err := http.NewRequestWithContext(ctx, "GET", baseURL.String(), nil)
 	if err != nil {
 		return nil, err
@@ -93,6 +96,7 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	}
 
 	type galaxyResult struct {
+		Name          string `json:"name"`
 		SummaryFields struct {
 			Versions []struct {
 				Name string `json:"name"`
@@ -112,8 +116,14 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 		return nil, err
 	}
 
-	// role not found
-	if len(results.Results) == 0 {
+	// check if the result returned by the API matches
+	// the role we were looking for
+	switch {
+	case len(results.Results) == 0:
+		fallthrough
+	case params.Get("namespaces") != results.Results[0].SummaryFields.Namespace.Name:
+		fallthrough
+	case params.Get("keywords") != results.Results[0].Name:
 		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", keywords)
 	}
 
