@@ -62,16 +62,11 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	params.Add("order_by", "-relevance")
 
 	// namespace to be used to filter the Ansible Galaxy results
-	var namespace string
-	var name string
 	var split = strings.Split(keywords, ".")
 	if len(split) > 0 {
-		namespace = split[0]
-		name = split[1]
-		params.Add("namespaces", namespace)
-		params.Add("keywords", name)
+		params.Add("namespaces", split[0])
+		params.Add("keywords", split[1])
 	} else {
-		name = keywords
 		params.Add("keywords", keywords)
 	}
 
@@ -126,9 +121,9 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	switch {
 	case len(results.Results) == 0:
 		fallthrough
-	case results.Results[0].SummaryFields.Namespace.Name != namespace:
+	case params.Get("namespaces") != results.Results[0].SummaryFields.Namespace.Name:
 		fallthrough
-	case results.Results[0].Name != name:
+	case params.Get("keywords") != results.Results[0].Name:
 		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", keywords)
 	}
 
