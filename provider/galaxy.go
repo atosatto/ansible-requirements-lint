@@ -60,12 +60,14 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	// set the Ansible Galaxy search parameters
 	params := url.Values{}
 	params.Add("order_by", "-relevance")
-	params.Add("keywords", keywords)
 
 	// namespace to be used to filter the Ansible Galaxy results
 	split := strings.Split(keywords, ".")
 	if len(split) > 0 {
 		params.Add("namespaces", split[0])
+		params.Add("keywords", split[0])
+	} else {
+		params.Add("keywords", keywords)
 	}
 
 	baseURL.RawQuery = params.Encode()
