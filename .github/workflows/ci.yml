@@ -51,21 +51,12 @@ jobs:
     needs: test
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Unshallow
-        run: git fetch --prune --unshallow
-
+        uses: actions/checkout@v1   # using v1 here because with v2
+                                    # computes the whole git history as changelog
       - name: Set up Go
         uses: actions/setup-go@v1
         with:
           go-version: 1.14.x
-
-      - name: Show git tags
-        run: git -c log.showSignature=false describe --tags
-
-      - name: Show git commits
-        run: git -c log.showSignature=false log --pretty=oneline --abbrev-commit --no-decorate --no-color tags/v1.1.0..tags/v1.1.1
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
