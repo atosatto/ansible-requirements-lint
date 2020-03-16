@@ -122,6 +122,9 @@ func TestParseRolesAndCollectionsRequirementsFile(t *testing.T) {
 func TestParseMetaRequirementsFile(t *testing.T) {
 	var requirements = `
 ---
+  galaxy_info:
+    description: Test Parse Meta Requirements File
+
   dependencies:
   - test.ansible-requirements-lint-inline
 

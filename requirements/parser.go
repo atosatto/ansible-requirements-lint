@@ -70,7 +70,8 @@ func Unmarshal(data []byte) (*Requirements, error) {
 			case k.Kind == yaml.ScalarNode && k.Value == "collections":
 				// collections are not supported yet
 			case k.Kind == yaml.ScalarNode:
-				return nil, NewUnexpectedMappingNodeValueError(k.Line, k.Value)
+				// when parsing dependencies in the meta/main.yml format
+				// we might encounter here the meta specific fields
 			default:
 				return nil, NewUnexpectedNodeKindError(k.Line, k.Kind)
 			}
