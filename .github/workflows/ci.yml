@@ -64,12 +64,14 @@ jobs:
         with:
           go-version: 1.14.x
 
+      - name: Show git log
+        run: git -c log.showSignature=false log --pretty=oneline --abbrev-commit --no-decorate --no-color tags/v1.1.0..tags/v1.1.1
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
           version: latest
-          args: --rm-dist --debug --snapshot --skip-validate --skip-publish
-          #args: release --rm-dist
+          args: release --rm-dist
           key: ${{ secrets.YOUR_PRIVATE_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
