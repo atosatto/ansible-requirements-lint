@@ -5,13 +5,13 @@ import (
 	"hash/fnv"
 	"sort"
 
-	"github.com/atosatto/ansible-requirements-lint/requirements"
+	"github.com/atosatto/ansible-requirements-lint/pkg/types"
 	version "github.com/hashicorp/go-version"
 )
 
 // roleHash returns an hash of the given Role to be used
 // as key for the UpdatesLinter cache.
-func roleHash(r requirements.Role) string {
+func roleHash(r types.Role) string {
 	h := fnv.New32a()
 	h.Write([]byte(r.Source))
 	return fmt.Sprintf("%x", h.Sum32())

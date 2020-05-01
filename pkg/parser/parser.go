@@ -1,14 +1,16 @@
-package requirements
+package parser
 
 import (
 	"io/ioutil"
+
+	"github.com/atosatto/ansible-requirements-lint/pkg/types"
 
 	"gopkg.in/yaml.v3"
 )
 
 // UnmarshalFromFile parses the Requirements defined in the
 // file stored at the given path.
-func UnmarshalFromFile(path string) (*Requirements, error) {
+func UnmarshalFromFile(path string) (*types.Requirements, error) {
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -17,14 +19,14 @@ func UnmarshalFromFile(path string) (*Requirements, error) {
 }
 
 // Unmarshal parses the Ansible Requirements defined in data.
-func Unmarshal(data []byte) (*Requirements, error) {
+func Unmarshal(data []byte) (*types.Requirements, error) {
 	var root yaml.Node
 	err := yaml.Unmarshal(data, &root)
 	if err != nil {
 		return nil, err
 	}
 
-	var requirements = Requirements{node: &root}
+	var requirements = types.Requirements{}
 	if len(root.Content) == 0 {
 		// the file is empty
 		return &requirements, nil
@@ -84,11 +86,11 @@ func Unmarshal(data []byte) (*Requirements, error) {
 	return &requirements, nil
 }
 
-func parseRolesFromNodesList(nodes []*yaml.Node) ([]*Role, error) {
-	var res []*Role
+func parseRolesFromNodesList(nodes []*yaml.Node) ([]types.Role, error) {
+	var res []types.Role
 
 	for _, n := range nodes {
-		var role = Role{node: n}
+		var role = types.Role{}
 
 		switch {
 		case n.Kind == yaml.ScalarNode:
@@ -129,7 +131,7 @@ func parseRolesFromNodesList(nodes []*yaml.Node) ([]*Role, error) {
 			return nil, NewUnexpectedNodeKindError(n.Line, n.Kind)
 		}
 
-		res = append(res, &role)
+		res = append(res, role)
 	}
 
 	return res, nil

@@ -1,4 +1,4 @@
-package requirements
+package parser
 
 import (
 	"fmt"

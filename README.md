@@ -51,7 +51,6 @@ WARN: atosatto.prometheus: role not at the latest version, upgrade from v1.0.1 t
 WARN: atosatto.grafana: role not at the latest version, upgrade from v1.0.0 to v1.1.0.
 ```
 
-
 In addition to requirements files, `ansible-requirements-lint` can parse role dependencies
 declared in the `meta/main.yml` file in your role directory
 

@@ -10,7 +10,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/atosatto/ansible-requirements-lint/requirements"
+	"github.com/atosatto/ansible-requirements-lint/pkg/errors"
+	"github.com/atosatto/ansible-requirements-lint/pkg/types"
 )
 
 const (
@@ -40,7 +41,7 @@ func NewAnsibleGalaxy(baseURL string) AnsibleGalaxy {
 }
 
 // VersionsForRole returns the list of versions available on AnsibleGalaxy for the Role r.
-func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role) ([]string, error) {
+func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r types.Role) ([]string, error) {
 	client := &http.Client{Timeout: time.Second * 10}
 
 	// Ansible Galaxy URL
@@ -124,7 +125,7 @@ func (g AnsibleGalaxy) VersionsForRole(ctx context.Context, r requirements.Role)
 	case params.Get("namespaces") != results.Results[0].SummaryFields.Namespace.Name:
 		fallthrough
 	case params.Get("keywords") != results.Results[0].Name:
-		return nil, fmt.Errorf("%s: unable to find role in Ansible Galaxy", keywords)
+		return nil, errors.NewRoleNotFoundError(r, g.baseURL)
 	}
 
 	// get the latest version of the role
