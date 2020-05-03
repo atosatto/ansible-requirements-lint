@@ -1,10 +1,12 @@
-package requirements
+package parser
 
 import (
 	"testing"
+
+	"github.com/atosatto/ansible-requirements-lint/pkg/types"
 )
 
-func rolesEqual(a, b Role) bool {
+func rolesEqual(a, b types.Role) bool {
 	switch {
 	case a.Name != b.Name:
 		return false
@@ -21,7 +23,7 @@ func rolesEqual(a, b Role) bool {
 	}
 }
 
-func parseAndCompare(t *testing.T, requirements string, expected Requirements) {
+func parseAndCompare(t *testing.T, requirements string, expected types.Requirements) {
 	parsed, err := Unmarshal([]byte(requirements))
 	if err != nil {
 		t.Errorf("expected no error, obtained %+v", err)
@@ -34,7 +36,7 @@ func parseAndCompare(t *testing.T, requirements string, expected Requirements) {
 
 	for i, r := range parsed.Roles {
 		expR := expected.Roles[i]
-		if !rolesEqual(*expR, *r) {
+		if !rolesEqual(expR, r) {
 			t.Errorf("expecting role %+v, parsed %+v", expR, r)
 		}
 	}
@@ -58,8 +60,8 @@ func TestParseInlineRequirementsFile(t *testing.T) {
   scm: git
 `
 
-	var expected = Requirements{
-		Roles: []*Role{
+	var expected = types.Requirements{
+		Roles: []types.Role{
 			{
 				Name:    "test.ansible-requirements-lint-name",
 				Version: "v1.0.0",
@@ -96,8 +98,8 @@ func TestParseRolesAndCollectionsRequirementsFile(t *testing.T) {
     version: v1.0.0
     scm: git
 `
-	var expected = Requirements{
-		Roles: []*Role{
+	var expected = types.Requirements{
+		Roles: []types.Role{
 			{
 				Name:    "test.ansible-requirements-lint-name",
 				Version: "v1.0.0",
@@ -142,8 +144,8 @@ func TestParseMetaRequirementsFile(t *testing.T) {
     version: v1.0.0
     scm: git
 `
-	var expected = Requirements{
-		Roles: []*Role{
+	var expected = types.Requirements{
+		Roles: []types.Role{
 			{
 				Name: "test.ansible-requirements-lint-inline",
 			},

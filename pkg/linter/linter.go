@@ -3,7 +3,7 @@ package linter
 import (
 	"context"
 
-	"github.com/atosatto/ansible-requirements-lint/requirements"
+	"github.com/atosatto/ansible-requirements-lint/pkg/types"
 )
 
 // Level indicates the importance of results
@@ -29,31 +29,26 @@ const (
 // on a given role dependency declaration.
 type Result struct {
 	// The role evaluated by the Linter.
-	Role requirements.Role
+	Role types.Role
 
-	// The level of importance of the
-	// Linter evaluation.
+	// The level of severity of the
+	// Linter result.
 	Level Level
-
-	// A textual message describing
-	// the Linter evaluation of the
-	// role.
-	Msg string
 
 	// The detailed error returned
 	// by the Linter for propagation
 	// to the caller.
-	// When Err != nil the level should
-	// be set to LevelError.
+	// Note that errors should be considered to be
+	// blocking only when the Level is set to LevelError.
 	Err error
 
-	// Optional implementation specific
+	// Implementation specific
 	// Linter Metadata.
 	Metadata interface{}
 }
 
-// A RolesLinter analyzes Ansible roles declarations
+// A Linter analyzes Ansible requirements definitions
 // and provides linting feedback in form of Result.
-type RolesLinter interface {
-	RunWithContext(ctx context.Context, roles <-chan requirements.Role, results chan<- Result)
+type Linter interface {
+	Lint(context.Context, *types.Requirements, chan<- Result) error
 }

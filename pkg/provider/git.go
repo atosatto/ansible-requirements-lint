@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/atosatto/ansible-requirements-lint/requirements"
+	"github.com/atosatto/ansible-requirements-lint/pkg/types"
 	"gopkg.in/src-d/go-billy.v4/memfs"
 	gogit "gopkg.in/src-d/go-git.v4"
 	"gopkg.in/src-d/go-git.v4/plumbing"
@@ -21,7 +21,7 @@ func NewGit() Git {
 }
 
 // VersionsForRole returns the list of versions available on the upstream Git repository for Role r.
-func (g Git) VersionsForRole(ctx context.Context, r requirements.Role) ([]string, error) {
+func (g Git) VersionsForRole(ctx context.Context, r types.Role) ([]string, error) {
 	// Use an in-memory filesystem for the repo and git objects
 	fs := memfs.New()
 	storer := memory.NewStorage()
